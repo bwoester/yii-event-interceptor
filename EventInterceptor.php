@@ -38,6 +38,7 @@
  */
 class EventInterceptor extends CComponent
 {
+  private $_forwarders = array();
 
   /**
    * Attach a closure to every event defined by $subject.
@@ -57,13 +58,15 @@ class EventInterceptor extends CComponent
     else
       $aEventNames = $events;
 
-    $interceptor = $this;
     foreach ($aEventNames as $eventName)
     {
-      $subject->$eventName = function( CEvent $event ) use( $interceptor, $eventName )
-      {
-        $interceptor->intercept( $eventName, $event );
-      };
+      $forwarder = new EventForwarder();
+      $forwarder->eventName = $eventName;
+      $forwarder->interceptor = $this;
+      
+      $this->_forwarders[] = $forwarder;
+      
+      $subject->$eventName = array($forwarder,'forward');
     }
   }
 
@@ -102,4 +105,22 @@ class EventInterceptor extends CComponent
     return $aEventNames;
   }
 
+}
+
+
+
+class EventForwarder
+{
+  /**
+   * @var EventInterceptor
+   */
+  public $interceptor = null;
+  /**
+   * @var string
+   */
+  public $eventName = '';
+  
+  public function forward( CEvent $event ) {
+    $this->interceptor->intercept( $this->eventName, $event );
+  }
 }
