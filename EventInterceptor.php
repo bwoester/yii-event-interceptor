@@ -38,6 +38,7 @@
  */
 class EventInterceptor extends CComponent
 {
+  
   /**
    * Attach a closure to every event defined by $subject.
    * The closure forwards the event including its name to the intercept method,
@@ -49,12 +50,9 @@ class EventInterceptor extends CComponent
    */
   public function initialize( CComponent $subject, array $events=array('*') )
   {
-    $aEventNames = array();
-
-    if (count($events) === 1 && array_key_exists(0,$events) && $events[0] === '*')
-      $aEventNames = $this->getEventNames( $subject );
-    else
-      $aEventNames = $events;
+    $aEventNames = (count($events) === 1 && array_key_exists(0,$events) && $events[0] === '*')
+      ? $this->getEventNames( $subject )
+      : $events;
 
     foreach ($aEventNames as $eventName)
     {
@@ -95,8 +93,11 @@ class EventInterceptor extends CComponent
     $aMethodNames = get_class_methods( $subject );
 
     foreach ($aMethodNames as $methodName)
-      if (strtolower(substr($methodName,0,2)) === 'on')
+    {
+      if (strtolower(substr($methodName,0,2)) === 'on') {
         $aEventNames[] = $methodName;
+      }
+    }
 
     return $aEventNames;
   }
