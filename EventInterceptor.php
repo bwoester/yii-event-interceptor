@@ -38,8 +38,6 @@
  */
 class EventInterceptor extends CComponent
 {
-  private $_forwarders = array();
-
   /**
    * Attach a closure to every event defined by $subject.
    * The closure forwards the event including its name to the intercept method,
@@ -63,8 +61,6 @@ class EventInterceptor extends CComponent
       $forwarder = new EventForwarder();
       $forwarder->eventName = $eventName;
       $forwarder->interceptor = $this;
-      
-      $this->_forwarders[] = $forwarder;
       
       $subject->$eventName = array($forwarder,'forward');
     }
