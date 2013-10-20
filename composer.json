@@ -1,0 +1,22 @@
+{
+    "name": "bwoester/yii-event-interceptor",
+    "type": "library",
+    "description": "A component, that allows to intercept events raised by observed components.",
+    "keywords": ["yii","component","intercept","event"],
+    "homepage": "https://github.com/bwoester/yii-event-interceptor",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Benjamin Wöster",
+            "email": "benjamin.woester@gmail.com",
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/bwoester/yii-event-interceptor/issues",
+        "source": "https://github.com/bwoester/yii-event-interceptor"
+    },
+    "require": {
+        "php": ">=5.1.0"
+    }
+}
+
