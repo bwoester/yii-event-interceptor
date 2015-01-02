@@ -38,7 +38,12 @@
  */
 class EventInterceptor extends CComponent
 {
-  
+
+  /**
+   * @var array Class-level cache of event names
+   */
+  private static $eventNamesCache = [];
+
   /**
    * Attach a closure to every event defined by $subject.
    * The closure forwards the event including its name to the intercept method,
@@ -59,15 +64,15 @@ class EventInterceptor extends CComponent
       $forwarder = new EventForwarder();
       $forwarder->eventName = $eventName;
       $forwarder->interceptor = $this;
-      
-      $subject->$eventName = array($forwarder,'forward');
+
+      $subject->attachEventHandler($eventName, array($forwarder, 'forward'));
     }
   }
 
   /**
    * Will be called whenever $subject raises an event.
    * Everything this method does is raising an event itself, which contains:
-   * 
+   *
    *   1) the name of the intercepted event
    *   2) the intercepted event object
    *
@@ -89,19 +94,21 @@ class EventInterceptor extends CComponent
 
   protected function getEventNames( CComponent $subject )
   {
-    $aEventNames = array();
-    $aMethodNames = get_class_methods( $subject );
+    $className = get_class($subject);
+    if (!isset(self::$eventNamesCache[$className])) {
+      $aEventNames = array();
+      $aMethodNames = get_class_methods($subject);
 
-    foreach ($aMethodNames as $methodName)
-    {
-      if (strtolower(substr($methodName,0,2)) === 'on') {
-        $aEventNames[] = $methodName;
+      foreach ($aMethodNames as $methodName) {
+        if (strtolower(substr($methodName, 0, 2)) === 'on') {
+          $aEventNames[] = $methodName;
+        }
       }
+      self::$eventNamesCache[$className] = $aEventNames;
     }
 
-    return $aEventNames;
+    return self::$eventNamesCache[$className];
   }
-
 }
 
 
